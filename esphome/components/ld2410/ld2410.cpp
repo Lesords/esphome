@@ -52,6 +52,7 @@ void LD2410Component::dump_config() {
 #ifdef USE_TEXT_SENSOR
   LOG_TEXT_SENSOR("  ", "VersionTextSensor", this->version_text_sensor_);
   LOG_TEXT_SENSOR("  ", "MacTextSensor", this->mac_text_sensor_);
+  LOG_TEXT_SENSOR("  ", "StatusTextSensor", this->status_text_sensor_);
 #endif
 #ifdef USE_SELECT
   LOG_SELECT("  ", "LightFunctionSelect", this->light_function_select_);
@@ -171,6 +172,16 @@ void LD2410Component::handle_periodic_data_(uint8_t *buffer, int len) {
     this->engineering_mode_switch_->publish_state(engineering_mode);
   }
 #endif
+  char target_state = buffer[TARGET_STATES];
+#ifdef USE_TEXT_SENSOR
+  if (this->status_text_sensor_ != nullptr) {
+    if (target_state) {
+      this->status_text_sensor_->publish_state({"Detected"});
+    } else {
+      this->status_text_sensor_->publish_state({"Clean"});
+    }
+  }
+#endif
 #ifdef USE_BINARY_SENSOR
   /*
     Target states: 9th
@@ -179,7 +190,6 @@ void LD2410Component::handle_periodic_data_(uint8_t *buffer, int len) {
     0x02 = Still targets
     0x03 = Moving+Still targets
   */
-  char target_state = buffer[TARGET_STATES];
   if (this->target_binary_sensor_ != nullptr) {
     this->target_binary_sensor_->publish_state(target_state != 0x00);
   }

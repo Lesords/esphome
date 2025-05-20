@@ -152,6 +152,7 @@ class LD2410Component : public Component, public uart::UARTDevice {
 #ifdef USE_TEXT_SENSOR
   SUB_TEXT_SENSOR(version)
   SUB_TEXT_SENSOR(mac)
+  SUB_TEXT_SENSOR(status)
 #endif
 #ifdef USE_SELECT
   SUB_SELECT(distance_resolution)

@@ -2,9 +2,11 @@ import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import (
+    CONF_STATUS,
     CONF_MAC_ADDRESS,
     CONF_VERSION,
     ENTITY_CATEGORY_DIAGNOSTIC,
+    ICON_MOTION_SENSOR,
     ICON_BLUETOOTH,
     ICON_CHIP,
 )
@@ -21,6 +23,9 @@ CONFIG_SCHEMA = {
     cv.Optional(CONF_MAC_ADDRESS): text_sensor.text_sensor_schema(
         entity_category=ENTITY_CATEGORY_DIAGNOSTIC, icon=ICON_BLUETOOTH
     ),
+    cv.Optional(CONF_STATUS): text_sensor.text_sensor_schema(
+        icon=ICON_MOTION_SENSOR
+    ),
 }
 
 
@@ -32,3 +37,6 @@ async def to_code(config):
     if mac_address_config := config.get(CONF_MAC_ADDRESS):
         sens = await text_sensor.new_text_sensor(mac_address_config)
         cg.add(ld2410_component.set_mac_text_sensor(sens))
+    if status_config := config.get(CONF_STATUS):
+        sens = await text_sensor.new_text_sensor(status_config)
+        cg.add(ld2410_component.set_status_text_sensor(sens))
