@@ -175,13 +175,22 @@ void LD2410Component::handle_periodic_data_(uint8_t *buffer, int len) {
   char target_state = buffer[TARGET_STATES];
 #ifdef USE_TEXT_SENSOR
   if (this->status_text_sensor_ != nullptr) {
-    LOG_TEXT_SENSOR("  ", "StatusTextSensor", this->status_text_sensor_);
-    ESP_LOGD(TAG, "deepSleep priority: %f", this->deep_sleep_->get_setup_priority());
+    ESP_LOGD(TAG, "api connected status: %d", api_is_connected());
     ESP_LOGD(TAG, "deepSleep wakeup reason: %d", esp_sleep_get_wakeup_cause());
     if (target_state) {
-      this->status_text_sensor_->publish_state({"Detected"});
+      this->clean_count_ = 0;
+      if (api_is_connected()) {
+        this->status_text_sensor_->publish_state({"Detected"});
+      }
     } else {
-      this->status_text_sensor_->publish_state({"Clean"});
+      (this->clean_count_)++;
+      if (this->clean_count_ == 3 && api_is_connected() && esp_sleep_get_wakeup_cause() == 7) {
+        ESP_LOGD(TAG, "Ready to sleep now");
+      }
+
+      if (api_is_connected()) {
+        this->status_text_sensor_->publish_state({"Clean"});
+      }
     }
   }
 #endif

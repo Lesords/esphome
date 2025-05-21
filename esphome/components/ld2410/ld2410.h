@@ -1,6 +1,7 @@
 #pragma once
 #include "esphome/core/defines.h"
 #include "esphome/core/component.h"
+#include "esphome/core/util.h"
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #endif
@@ -226,6 +227,7 @@ class LD2410Component : public Component, public uart::UARTDevice {
   int32_t last_periodic_millis_ = millis();
   int32_t last_engineering_mode_change_millis_ = millis();
   uint16_t throttle_;
+  uint16_t clean_count_;
   std::string version_;
   std::string mac_;
   std::string out_pin_level_;
