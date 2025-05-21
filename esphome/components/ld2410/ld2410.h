@@ -23,8 +23,13 @@
 #include "esphome/components/text_sensor/text_sensor.h"
 #endif
 #include "esphome/components/uart/uart.h"
+#include "esphome/components/deep_sleep/deep_sleep_component.h"
 #include "esphome/core/automation.h"
 #include "esphome/core/helpers.h"
+
+#ifdef USE_ESP32
+#include <esp_sleep.h>
+#endif
 
 #include <map>
 
@@ -175,6 +180,7 @@ class LD2410Component : public Component, public uart::UARTDevice {
   SUB_NUMBER(timeout)
   SUB_NUMBER(light_threshold)
 #endif
+  deep_sleep::DeepSleepComponent *deep_sleep_;
 
  public:
   LD2410Component();
@@ -201,6 +207,7 @@ class LD2410Component : public Component, public uart::UARTDevice {
   void set_distance_resolution(const std::string &state);
   void set_baud_rate(const std::string &state);
   void factory_reset();
+  void set_deep_sleep(deep_sleep::DeepSleepComponent *deep_sleep) { this->deep_sleep_ = deep_sleep; }
 
  protected:
   int two_byte_to_int_(char firstbyte, char secondbyte) { return (int16_t) (secondbyte << 8) + firstbyte; }

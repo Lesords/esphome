@@ -175,6 +175,9 @@ void LD2410Component::handle_periodic_data_(uint8_t *buffer, int len) {
   char target_state = buffer[TARGET_STATES];
 #ifdef USE_TEXT_SENSOR
   if (this->status_text_sensor_ != nullptr) {
+    LOG_TEXT_SENSOR("  ", "StatusTextSensor", this->status_text_sensor_);
+    ESP_LOGD(TAG, "deepSleep priority: %f", this->deep_sleep_->get_setup_priority());
+    ESP_LOGD(TAG, "deepSleep wakeup reason: %d", esp_sleep_get_wakeup_cause());
     if (target_state) {
       this->status_text_sensor_->publish_state({"Detected"});
     } else {
