@@ -2,8 +2,6 @@ import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_DEEP_SLEEP_ID,
-    CONF_LED_ID,
     CONF_STATUS,
     CONF_MAC_ADDRESS,
     CONF_VERSION,
@@ -16,6 +14,9 @@ from esphome.const import (
 from . import CONF_LD2410_ID, LD2410Component
 from esphome.components.deep_sleep import DeepSleepComponent
 from esphome.components import switch
+
+CONF_DEEP_SLEEP_ID = "deep_sleep_id"
+CONF_LED_ID = "led_id"
 
 DEPENDENCIES = ["ld2410", "deep_sleep"]
 
