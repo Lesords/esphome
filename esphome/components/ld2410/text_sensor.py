@@ -2,7 +2,7 @@ import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_DEEP_SLEEP,
+    CONF_DEEP_SLEEP_ID,
     CONF_STATUS,
     CONF_MAC_ADDRESS,
     CONF_VERSION,
@@ -27,8 +27,9 @@ CONFIG_SCHEMA = {
     ),
     cv.Optional(CONF_STATUS): text_sensor.text_sensor_schema(
         icon=ICON_MOTION_SENSOR
-    ),
-    cv.Required(CONF_DEEP_SLEEP): cv.use_id(DeepSleepComponent),
+    ).extend({
+        cv.Required(CONF_DEEP_SLEEP_ID): cv.use_id(DeepSleepComponent)
+    }),
 }
 
 
@@ -43,5 +44,5 @@ async def to_code(config):
     if status_config := config.get(CONF_STATUS):
         sens = await text_sensor.new_text_sensor(status_config)
         cg.add(ld2410_component.set_status_text_sensor(sens))
-    deep_sleep_component = await cg.get_variable(config[CONF_DEEP_SLEEP])
-    cg.add(ld2410_component.set_deep_sleep(deep_sleep_component))
+        deep_sleep_component = await cg.get_variable(config[CONF_STATUS][CONF_DEEP_SLEEP_ID])
+        cg.add(ld2410_component.set_deep_sleep(deep_sleep_component))
