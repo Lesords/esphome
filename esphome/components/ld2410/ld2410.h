@@ -169,6 +169,7 @@ class LD2410Component : public Component, public uart::UARTDevice {
 #ifdef USE_SWITCH
   SUB_SWITCH(engineering_mode)
   SUB_SWITCH(bluetooth)
+  SUB_SWITCH(led)
 #endif
 #ifdef USE_BUTTON
   SUB_BUTTON(reset)

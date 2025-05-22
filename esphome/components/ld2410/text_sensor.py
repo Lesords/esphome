@@ -3,6 +3,7 @@ from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_DEEP_SLEEP_ID,
+    CONF_LED_ID,
     CONF_STATUS,
     CONF_MAC_ADDRESS,
     CONF_VERSION,
@@ -14,6 +15,7 @@ from esphome.const import (
 
 from . import CONF_LD2410_ID, LD2410Component
 from esphome.components.deep_sleep import DeepSleepComponent
+from esphome.components import switch
 
 DEPENDENCIES = ["ld2410", "deep_sleep"]
 
@@ -28,7 +30,8 @@ CONFIG_SCHEMA = {
     cv.Optional(CONF_STATUS): text_sensor.text_sensor_schema(
         icon=ICON_MOTION_SENSOR
     ).extend({
-        cv.Required(CONF_DEEP_SLEEP_ID): cv.use_id(DeepSleepComponent)
+        cv.Required(CONF_DEEP_SLEEP_ID): cv.use_id(DeepSleepComponent),
+        cv.Optional(CONF_LED_ID): cv.use_id(switch.Switch)
     }),
 }
 
@@ -46,3 +49,5 @@ async def to_code(config):
         cg.add(ld2410_component.set_status_text_sensor(sens))
         deep_sleep_component = await cg.get_variable(config[CONF_STATUS][CONF_DEEP_SLEEP_ID])
         cg.add(ld2410_component.set_deep_sleep(deep_sleep_component))
+        switch_component = await cg.get_variable(config[CONF_STATUS][CONF_LED_ID])
+        cg.add(ld2410_component.set_led_switch(switch_component))
