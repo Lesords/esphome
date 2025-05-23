@@ -183,7 +183,9 @@ void LD2410Component::handle_periodic_data_(uint8_t *buffer, int len) {
     if (target_state) {
       this->clean_count_ = 0;
       if (api_is_connected()) {
-        this->deep_sleep_->prevent_deep_sleep();
+        if (esp_sleep_get_wakeup_cause() == 7) {
+          this->deep_sleep_->prevent_deep_sleep();
+        }
         this->status_text_sensor_->publish_state({"Detected"});
         this->led_switch_->turn_off();
       }
