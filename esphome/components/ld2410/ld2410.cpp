@@ -81,7 +81,9 @@ void LD2410Component::dump_config() {
 void LD2410Component::setup() {
   ESP_LOGCONFIG(TAG, "Setting up LD2410...");
   this->read_all_info();
-  this->led_switch_->turn_on();
+  if (this->led_switch_ != nullptr) {
+    this->led_switch_->turn_on();
+  }
   this->clean_count_ = 0;
   ESP_LOGCONFIG(TAG, "Mac Address : %s", const_cast<char *>(this->mac_.c_str()));
   ESP_LOGCONFIG(TAG, "Firmware Version : %s", const_cast<char *>(this->version_.c_str()));
@@ -187,12 +189,16 @@ void LD2410Component::handle_periodic_data_(uint8_t *buffer, int len) {
           this->deep_sleep_->prevent_deep_sleep();
         }
         this->status_text_sensor_->publish_state({"Detected"});
-        this->led_switch_->turn_off();
+        if (this->led_switch_ != nullptr) {
+          this->led_switch_->turn_off();
+        }
       }
     } else {
       if (api_is_connected()) {
         this->status_text_sensor_->publish_state({"Clean"});
-        this->led_switch_->turn_on();
+        if (this->led_switch_ != nullptr) {
+          this->led_switch_->turn_on();
+        }
         (this->clean_count_)++;
       }
 

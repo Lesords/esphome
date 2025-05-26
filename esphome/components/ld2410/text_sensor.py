@@ -50,5 +50,6 @@ async def to_code(config):
         cg.add(ld2410_component.set_status_text_sensor(sens))
         deep_sleep_component = await cg.get_variable(config[CONF_STATUS][CONF_DEEP_SLEEP_ID])
         cg.add(ld2410_component.set_deep_sleep(deep_sleep_component))
-        switch_component = await cg.get_variable(config[CONF_STATUS][CONF_LED_ID])
-        cg.add(ld2410_component.set_led_switch(switch_component))
+        if led_config := status_config.get(CONF_LED_ID):
+            switch_component = await cg.get_variable(led_config)
+            cg.add(ld2410_component.set_led_switch(switch_component))
